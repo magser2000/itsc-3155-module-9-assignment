@@ -1,10 +1,11 @@
-from flask import Flask, redirect, render_template
+from flask import Flask, redirect, render_template, request, abort
 
 from src.repositories.movie_repository import get_movie_repository
 
 app = Flask(__name__)
 
 # Get the movie repository singleton to use throughout the application
+# makes instance movie_repository.create_movie()
 movie_repository = get_movie_repository()
 
 
@@ -24,10 +25,39 @@ def create_movies_form():
     return render_template('create_movies_form.html', create_rating_active=True)
 
 
+#def create_movie(self, title: str, director: str, rating: int) -> Movie:
+#"""Create a new movie and return it"""
+# Create the movie instance
+# new_id = randint(0, 100_000)  # Sufficiently unique ID for our purposes
+# movie = Movie(new_id, title, director, rating)
+# Save the instance in our in-memory database
+# self._db[new_id] = movie
+# Return the movie instance
+# return movie
+
 @app.post('/movies')
 def create_movie():
+
+    # create branch
+    # pull request
+
     # TODO: Feature 2
     # After creating the movie in the database, we redirect to the list all movies page
+    # Getting the director name, movie title, movie_id,  
+
+    # name and id in html should = the three orange values below
+    title = request.form.get('title')
+    director = request.form.get('director')
+    rating = request.form.get('rating', type = int)
+
+    if not title or not director or not rating or rating < 1 or rating > 5:
+        # Bad request 400 error if there is nothing or rating values aren't valid
+        return abort(400)
+    
+    movie_repository.create_movie(title, director, rating)
+
+    print(movie_repository.get_all_movies())
+    # check it returns 302 in unit tests for redirect if it has requirements
     return redirect('/movies')
 
 

@@ -12,6 +12,7 @@ def test_create_page(test_app):
     # To Do test submit button
     assert b'<button type="submit" class="btn btn-primary">Submit</button>' in response.data
 
+# testing redirect
 def test_redirect(test_app):
     response = test_app.post("/movies", data={ 
         "title": "Spiderman",
